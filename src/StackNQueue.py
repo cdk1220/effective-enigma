@@ -21,6 +21,9 @@ class Stack:
         else:
             raise LookupError("Trying to peak empty stack !!!")
 
+    def is_empty(self):
+        return True if len(self.__array) == 0 else False
+
 
 class Queue:
     def __init__(self):
@@ -40,3 +43,6 @@ class Queue:
             return deepcopy(self.__array[0])
         else:
             raise LookupError("Trying to peak empty queue !!!")
+
+    def is_empty(self):
+        return True if len(self.__array) == 0 else False
