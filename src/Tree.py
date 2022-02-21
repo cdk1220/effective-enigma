@@ -1,5 +1,8 @@
 """ This file implements binary trees and binary search trees """
 
+from StackNQueue import *
+import math
+
 
 class TreeNode:
     def __init__(self, value: int) -> None:
@@ -12,31 +15,34 @@ class Tree:
     def __init__(self, node: TreeNode) -> None:
         self.head = node
 
-    def in_order_traversal(self, start_node: TreeNode) -> None:
+    def in_order_traversal(self, start_node: TreeNode):
         if start_node is None:
-            return
+            return []
 
-        self.in_order_traversal(start_node.left)
-        print(start_node.value)
-        self.in_order_traversal(start_node.right)
+        left_values = self.in_order_traversal(start_node.left)
+        right_values = self.in_order_traversal(start_node.right)
+        return [*left_values, start_node.value, *right_values]
 
-    def pre_order_traversal(self, start_node: TreeNode) -> None:
+    def pre_order_traversal(self, start_node: TreeNode):
         if start_node is None:
-            return
+            return []
 
-        print(start_node.value)
-        self.in_order_traversal(start_node.left)
-        self.in_order_traversal(start_node.right)
+        left_values = self.in_order_traversal(start_node.left)
+        right_values = self.in_order_traversal(start_node.right)
+        return [start_node.value, *left_values, *right_values]
 
-    def post_order_traversal(self, start_node: TreeNode) -> None:
+    def post_order_traversal(self, start_node: TreeNode):
         if start_node is None:
-            return
+            return []
 
-        self.in_order_traversal(start_node.left)
-        self.in_order_traversal(start_node.right)
-        print(start_node.value)
+        left_values = self.in_order_traversal(start_node.left)
+        right_values = self.in_order_traversal(start_node.right)
+        return [*left_values, *right_values, start_node.value]
 
     def find_min(self, start_node: TreeNode) -> int:
+        # Need to guard against start_node being None for cases where a given node has only one child
+        if start_node is None:
+            return math.inf
         if start_node.left is None and start_node.right is None:
             return start_node.value
 
@@ -47,6 +53,9 @@ class Tree:
         return min(current_value, left_min, right_min)
 
     def find_max(self, start_node: TreeNode) -> int:
+        # Need to guard against start_node being None for cases where a given node has only one child
+        if start_node is None:
+            return -math.inf
         if start_node.left is None and start_node.right is None:
             return start_node.value
 
@@ -55,6 +64,36 @@ class Tree:
         right_max = self.find_max(start_node.right)
 
         return min(current_value, left_max, right_max)
+
+    def depth_first_iterative(self, start_node: TreeNode):
+        my_stack = Stack()
+        my_stack.push(start_node)
+        result = Stack()
+        while not my_stack.is_empty():
+            # Consider popping having visted the node
+            current_node = my_stack.pop()
+            result.push(current_node.value)
+            if current_node.right is not None:
+                my_stack.push(current_node.right)
+            if current_node.left is not None:
+                my_stack.push(current_node.left)
+
+        return result
+
+    def breadth_first(self, start_node: TreeNode):
+        my_queue = Queue()
+        my_queue.enqueue(start_node)
+        result = Queue()
+        while not my_queue.is_empty():
+            # Consider dequeueing having visited the node
+            current_node = my_queue.dequeue()
+            result.enqueue(current_node.value)
+            if current_node.left is not None:
+                my_queue.enqueue(current_node.left)
+            if current_node.right is not None:
+                my_queue.enqueue(current_node.right)
+
+        return result
 
 
 class BinarySearchTree(Tree):
@@ -120,4 +159,3 @@ class BinarySearchTree(Tree):
                 start_node.right = self.remove_element(min_value, start_node.right)
 
         return start_node
-
