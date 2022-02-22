@@ -24,6 +24,9 @@ class Stack:
     def is_empty(self):
         return True if len(self.__array) == 0 else False
 
+    def __iter__(self):
+        return iter(self.__array)
+
 
 class Queue:
     def __init__(self):
@@ -46,3 +49,6 @@ class Queue:
 
     def is_empty(self):
         return True if len(self.__array) == 0 else False
+
+    def __iter__(self):
+        return iter(self.__array)
